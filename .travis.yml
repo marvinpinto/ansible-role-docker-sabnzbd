@@ -1,30 +1,35 @@
 ---
 language: python
 python: "2.7"
+sudo: required
+dist: trusty
 
-# Use the new container infrastructure
-sudo: false
-
-# Install ansible
-addons:
-  apt:
-    packages:
-    - python-pip
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y python-pip
+  - sudo pip install ansible
+  - sudo mkdir -p /opt/ansible_roles
 
 install:
-  # Install ansible
-  - pip install ansible
-
-  # Check ansible version
   - ansible --version
-
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
+  - sudo ansible-galaxy install -p /opt/ansible_roles marvinpinto.docker
+  - echo -e 'localhost ansible_connection=local' > tests/inventory
+  - echo -e '[defaults]\nroles_path = ../:/opt/ansible_roles\nhostfile = ./tests/inventory' > ansible.cfg
 
 script:
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  - ansible-playbook --syntax-check tests/test.yml
+  - ansible-playbook -v --diff tests/test.yml
+  - >
+    ansible-playbook tests/test.yml
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
 
 notifications:
   email: false
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  irc:
+    channels:
+      - secure: "Ppk12LXmovO9mibfcTC9JyDhco7K2wu6auI9BgbddFeACQGj8ArbIbaW7sWMXoJRorUvZFOlnEnlPFzXyPkyGbo3hS1zPcAwdZRV/mRHstx5P7imRLjC2KXR2UGlAi3s9R+fJkqzbcWplDc3BICYQ0ZoQzTR6dWfk4RMJUuG+gEdMXtClgsWyRb4xzou5v03B/cpnhqQfZOSjbonTHl16uHQ2FgLKCrvAgxs7nGZlWdfwKWk3SkrCWdo1lfTTvQzPA3aMh1ornLtPNKLQPSQyc0E5JtqHmSao3kJ/lREkGNyln0OqwFeKjSZEu4NLZZnG8PZisD6I3mOBW3K44v9NAGeu/FdodPuAtQZ5QP4FbGK0VprjVnOQdAdIka1T8vfXy7ncrve6zD1Bz4NBoE32EO2zl96si0Z/za/MBkuCECmYb1qNHLVaOajJWWeJyt4v/iD0hoEPjuaTy7RDBk+I9HH+yq35imz9fNi56WMAqw0HtSAWpKfA/8rc+jEMc65eXdUz+lE5s3EewabhK3fieh8ejcFTimrxKLef5KI9zi4+sECR6ebBsi0+qscprddn5IjlIqKVSMIt73FiX9mn3pSgtlbsLdR4zFnTHLv+Iw21OHLsV8ZTrc/nIfEG0pGqGtrX5cdMH9/FVEJhYwK0en5Nml3zcMxzelADLbmTHk="
+    on_success: "change"
+    on_failure: "change"

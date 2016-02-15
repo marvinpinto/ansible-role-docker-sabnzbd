@@ -28,3 +28,8 @@ script:
 notifications:
   email: false
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  irc:
+    channels:
+      - secure: "Ppk12LXmovO9mibfcTC9JyDhco7K2wu6auI9BgbddFeACQGj8ArbIbaW7sWMXoJRorUvZFOlnEnlPFzXyPkyGbo3hS1zPcAwdZRV/mRHstx5P7imRLjC2KXR2UGlAi3s9R+fJkqzbcWplDc3BICYQ0ZoQzTR6dWfk4RMJUuG+gEdMXtClgsWyRb4xzou5v03B/cpnhqQfZOSjbonTHl16uHQ2FgLKCrvAgxs7nGZlWdfwKWk3SkrCWdo1lfTTvQzPA3aMh1ornLtPNKLQPSQyc0E5JtqHmSao3kJ/lREkGNyln0OqwFeKjSZEu4NLZZnG8PZisD6I3mOBW3K44v9NAGeu/FdodPuAtQZ5QP4FbGK0VprjVnOQdAdIka1T8vfXy7ncrve6zD1Bz4NBoE32EO2zl96si0Z/za/MBkuCECmYb1qNHLVaOajJWWeJyt4v/iD0hoEPjuaTy7RDBk+I9HH+yq35imz9fNi56WMAqw0HtSAWpKfA/8rc+jEMc65eXdUz+lE5s3EewabhK3fieh8ejcFTimrxKLef5KI9zi4+sECR6ebBsi0+qscprddn5IjlIqKVSMIt73FiX9mn3pSgtlbsLdR4zFnTHLv+Iw21OHLsV8ZTrc/nIfEG0pGqGtrX5cdMH9/FVEJhYwK0en5Nml3zcMxzelADLbmTHk="
+    on_success: "change"
+    on_failure: "change"

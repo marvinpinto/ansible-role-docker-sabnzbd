@@ -1,8 +1,14 @@
 ---
+# Sabnzbd config directory (on the host)
 docker_sabnzbd_config_directory: '/tmp/sabnzbd_config'
+
+# Sabnzbd data directory (on the host)
 docker_sabnzbd_data_directory: '/tmp/sabnzbd_data'
+
+# Docker container name
 docker_sabnzbd_container_name: 'sabnzbd'
 
+# sabnzbd.ini config file contents
 docker_sabnzbd_config_ini: |
   __version__ = 19
   __encoding__ = utf-8

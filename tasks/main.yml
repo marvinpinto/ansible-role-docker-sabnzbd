@@ -1,2 +1,35 @@
 ---
-# tasks file for docker-sabnzbd
+- name: "Create the {{ docker_sabnzbd_config_directory }} directory on the host"
+  file:
+    path: "{{ docker_sabnzbd_config_directory }}"
+    state: 'directory'
+    mode: '0755'
+
+- name: "Create the {{ docker_sabnzbd_data_directory }} directory on the host"
+  file:
+    path: "{{ docker_sabnzbd_data_directory }}"
+    state: 'directory'
+    mode: '0755'
+
+- name: 'Put the sabnzbd.ini file in place'
+  copy:
+    content: "{{ docker_sabnzbd_config_ini }}"
+    dest: "{{ docker_sabnzbd_config_directory }}/sabnzbd.ini"
+    mode: '0600'
+  notify: 'docker_sabnzbd-restart-docker-sabnzbd'
+
+- name: 'Start the sabnzbd docker container'
+  docker:
+    image: "timhaak/sabnzbd"
+    name: "{{ docker_sabnzbd_container_name }}"
+    volumes:
+      - "{{ docker_sabnzbd_config_directory }}/sabnzbd.ini:/config/sabnzbd.ini"
+      - "{{ docker_sabnzbd_data_directory }}:/data"
+    ports: '8080:8080'
+    state: 'started'
+    restart_policy: 'always'
+    log_driver: 'syslog'
+    log_opt:
+      syslog-tag: "{{ docker_sabnzbd_container_name }}"
+
+- meta: flush_handlers

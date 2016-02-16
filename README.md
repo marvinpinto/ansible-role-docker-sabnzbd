@@ -9,9 +9,9 @@ Ansible Galaxy role to manage and run a [sabnzbd](http://sabnzbd.org) docker
 container.
 
 This role wires together the sabnzbd [docker
-container](https://hub.docker.com/r/timhaak/sabnzbd) created by
-[timhaak](https://github.com/timhaak/docker-sabnzbd), along with various
-boilerplate to get things going.
+container](https://hub.docker.com/r/linuxserver/sabnzbd) created by
+[linuxserver](https://github.com/linuxserver/docker-sabnzbd), along with
+various boilerplate to get things going.
 
 
 Requirements
@@ -30,20 +30,22 @@ Role Variables
 --------------
 
 ```yaml
-# Sabnzbd config directory (on the host)
-docker_sabnzbd_config_directory: '/tmp/sabnzbd_config'
-
-# Sabnzbd data directory (on the host)
-docker_sabnzbd_data_directory: '/tmp/sabnzbd_data'
+# Sabnzbd host port
+docker_sabnzbd_exposed_port: '8080'
 
 # Docker container name
 docker_sabnzbd_container_name: 'sabnzbd'
 
-# sabnzbd.ini config file contents
-docker_sabnzbd_config_ini: |
-  __version__ = 19
-  __encoding__ = utf-8
-  ...
+# Directory that will be used as the root of all sabnzbd-related configuration
+# & data. Note that these sub-directories *will* be automatically created if
+# they don't already exist.
+#
+# So, assuming 'docker_sabnzbd_mounted_directory' is set to:
+# /tmp/sabnzbd_mount, the following directories will be created automatically:
+# /tmp/sabnzbd_mount/config
+# /tmp/sabnzbd_mount/downloads
+# /tmp/sabnzbd_mount/incomplete-downloads
+docker_sabnzbd_mounted_directory: '/tmp/sabnzbd_mount'
 ```
 
 
@@ -62,3 +64,14 @@ Use it in a playbook as follows:
     - role: 'marvinpinto.docker-sabnzbd'
       become: true
 ```
+
+
+Mounted Directory
+-----------------
+
+The reasoning behind storing all related configuration in the
+`docker_sabnzbd_mounted_directory` root directory is because a person now has
+the ability to manage all the configuration + data outside of Ansible.
+
+This becomes especially useful when said mounted directory resides on a
+separate filesystem (EBS, USB disk, etc).

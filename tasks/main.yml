@@ -1,4 +1,10 @@
 ---
+- name: 'Clone the nzbToMedia scripts to /opt/nzbtomedia'
+  git:
+    repo: 'https://github.com/clinton-hall/nzbToMedia.git'
+    dest: '/opt/nzbtomedia'
+    version: '3e4861e87c543a4d2debd8997feb16bda3ef5339'
+
 - name: 'Start the sabnzbd docker container'
   docker:
     image: "linuxserver/sabnzbd"
@@ -11,6 +17,7 @@
       - '{{ docker_sabnzbd_mounted_directory }}/config:/config'
       - '{{ docker_sabnzbd_mounted_directory }}/downloads:/downloads'
       - '{{ docker_sabnzbd_mounted_directory }}/incomplete-downloads:/incomplete-downloads'
+      - '/opt/nzbtomedia:/nzbtomedia'
     ports: '{{ docker_sabnzbd_exposed_port }}:8080'
     state: 'started'
     restart_policy: 'always'
